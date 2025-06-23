@@ -1,0 +1,36 @@
+context_parser: pypyr.parser.keyvaluepairs
+
+steps:
+  - name: pypyr.steps.contextsetf
+    comment: Set destination and filenames
+    in:
+      contextSetf:
+        dest_dir: models/spam-sms
+        files: [
+          'spam-model.h5',
+          'spam-classifier-tokenizer.json',
+          'spam-classifier-metadata.json'
+        ]
+        base_url: https://huggingface.co/datasets/ramimejri/spam-sms-model/resolve/main/
+
+  - name: pypyr.steps.py
+    comment: Download files from Hugging Face
+    in:
+      py: |
+        import os
+        import pathlib
+        import requests
+
+        dest_path = pathlib.Path(dest_dir)
+        dest_path.mkdir(parents=True, exist_ok=True)
+
+        for filename in files:
+            url = base_url + filename
+            file_path = dest_path / filename
+            print(f"Downloading {url}...")
+            response = requests.get(url)
+            if response.status_code != 200:
+                raise Exception(f"Failed to download {url}: {response.status_code}")
+            with open(file_path, 'wb') as f:
+                f.write(response.content)
+            print(f"Saved to {file_path}")
