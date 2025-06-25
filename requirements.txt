@@ -1,9 +1,10 @@
 cassandra-driver
-fastapi
-gunicorn
-jupyter
 pandas
+scikit-learn
+tensorflow
+boto3
 pypyr
 python-dotenv
-#tensorflow
+fastapi
 uvicorn
+gunicorn
